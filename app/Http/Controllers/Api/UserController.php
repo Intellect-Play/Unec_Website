@@ -24,13 +24,27 @@ class UserController extends Controller
     // Kullanıcıyı güncelle
     public function update(Request $request, $id)
     {
+
         $user = User::findOrFail($id);
 
         if (auth()->id() !== $user->id) {
             return response()->json(['message' => 'Yetkisiz erişim'], 403);
         }
+        $data = $request->except('image');
 
-        $user->update($request->all());
+        if ($request->hasFile('image')) {
+
+            if ($user->image && file_exists(public_path($user->image))) {
+                unlink(public_path($user->image));
+            }
+
+            $filename = time() . '.' . $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->move(public_path('uploads'), $filename);
+            $data['image'] = 'uploads/' . $filename;
+        }
+
+        $user->update($data);
+
         return response()->json($user);
     }
 
