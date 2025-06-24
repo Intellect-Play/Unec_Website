@@ -17,25 +17,55 @@ class RolePermissionSeeder extends Seeder
      */
     public function run()
     {
-        //
-        // Super Admin rolünü oluştur
-        $superAdmin = Role::create(['name' => 'super_admin']);
+        // //
+        // // Super Admin rolünü oluştur
+        // $superAdmin = Role::create(['name' => 'super_admin']);
 
-        // Bazı izinleri oluştur
-        $permissions = ['create_user', 'delete_user', 'edit_user', 'assign_roles'];
+        // // Bazı izinleri oluştur
+        // $permissions = ['create_user', 'delete_user', 'edit_user', 'assign_roles'];
+        // foreach ($permissions as $perm) {
+        //     Permission::create(['name' => $perm]);
+        // }
+
+        // // Hepsini super admin rolüne ata
+        // $superAdmin->permissions()->attach(Permission::pluck('id'));
+
+        // // İlk admin user’a super admin rolü ata
+        // AdminUser::create([
+        //     'name' => 'Root',
+        //     'email' => 'admin@example.com',
+        //     'password' => bcrypt('coxcetinadminparolu57'),
+        //     'role_id' => $superAdmin->id
+        // ]);
+
+
+        // Super Admin rolünü oluştur
+        $superAdmin = Role::firstOrCreate(['name' => 'super_admin']);
+
+        // Tüm gerekli izinleri oluştur
+        $permissions = [
+            'create_user',
+            'delete_user',
+            'edit_user',
+            'assign_roles',
+            'view_user',
+        ];
+
         foreach ($permissions as $perm) {
-            Permission::create(['name' => $perm]);
+            Permission::firstOrCreate(['name' => $perm]);
         }
 
-        // Hepsini super admin rolüne ata
-        $superAdmin->permissions()->attach(Permission::pluck('id'));
+        // Tüm izinleri bu role ver
+        $allPermissionIds = Permission::pluck('id')->toArray();
+        $superAdmin->permissions()->sync($allPermissionIds);
 
         // İlk admin user’a super admin rolü ata
-        AdminUser::create([
-            'name' => 'Root',
+        AdminUser::firstOrCreate([
             'email' => 'admin@example.com',
+        ], [
+            'name' => 'Root',
             'password' => bcrypt('coxcetinadminparolu57'),
-            'role_id' => $superAdmin->id
+            'role_id' => $superAdmin->id,
         ]);
     }
 }
