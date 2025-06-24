@@ -45,18 +45,51 @@ Route::middleware('auth:sanctum')->get('/search', [UserController::class, 'searc
 
 //-------------------------------------------- ADMIN --------------------------------
 
-Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
-    //User actions
-    Route::get('/users', [UserManagementController::class, 'index']);
-    Route::get('/users/{id}', [UserManagementController::class, 'show']);
-    Route::put('/users/{id}', [UserManagementController::class, 'update']);
-    Route::delete('/users/{id}', [UserManagementController::class, 'destroy']);
+// Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+//     //User actions
+//     Route::get('/users', [UserManagementController::class, 'index']);
+//     Route::get('/users/{id}', [UserManagementController::class, 'show']);
+//     Route::put('/users/{id}', [UserManagementController::class, 'update']);
+//     Route::delete('/users/{id}', [UserManagementController::class, 'destroy']);
 
 
-    //Roles
-    Route::post('/roles', [UserManagementController::class, 'createRole']);
-    Route::post('/permissions', [UserManagementController::class, 'createPermission']);
-    Route::post('/roles/{role}/permissions', [UserManagementController::class, 'assignPermissions']);
+//     //Roles
+//     Route::post('/roles', [UserManagementController::class, 'createRole']);
+//     Route::post('/permissions', [UserManagementController::class, 'createPermission']);
+//     Route::post('/roles/{role}/permissions', [UserManagementController::class, 'assignPermissions']);
+
+//     //New admin user
+//     Route::post('/admin-users', [UserManagementController::class, 'createAdminUser']);
+// });
+
+
+Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
+    // USER ACTIONS
+    Route::get('/users', [UserManagementController::class, 'index'])
+        ->middleware('check.permission:view_user');
+
+    Route::get('/users/{id}', [UserManagementController::class, 'show'])
+        ->middleware('check.permission:view_user');
+
+    Route::put('/users/{id}', [UserManagementController::class, 'update'])
+        ->middleware('check.permission:edit_user');
+
+    Route::delete('/users/{id}', [UserManagementController::class, 'destroy'])
+        ->middleware('check.permission:delete_user');
+
+    // ROLE MANAGEMENT (sadece super_admin yapabilsin, özel middleware istersen tanımlarız)
+    Route::post('/roles', [UserManagementController::class, 'createRole'])
+        ->middleware('check.permission:assign_roles');
+
+    Route::post('/permissions', [UserManagementController::class, 'createPermission'])
+        ->middleware('check.permission:assign_roles');
+
+    Route::post('/roles/{role}/permissions', [UserManagementController::class, 'assignPermissions'])
+        ->middleware('check.permission:assign_roles');
+
+    // YENİ ADMIN EKLEME
+    Route::post('/admin-users', [UserManagementController::class, 'createAdminUser'])
+        ->middleware('check.permission:assign_roles');
 });
 
 //

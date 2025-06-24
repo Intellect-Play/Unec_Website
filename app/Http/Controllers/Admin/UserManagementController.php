@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminUser;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -11,9 +12,34 @@ use Illuminate\Http\Request;
 class UserManagementController extends Controller
 {
     // Tüm kullanıcıları getir
-    public function index()
+    public function index(Request $request)
     {
+
+        $admin = $request->user('admin'); // admin guard'ıyla gelen kullanıcıyı al
+
+        // Eğer super_admin değilse ve 'view_user' izni yoksa engelle
+        if ($admin->role->name !== 'super_admin' && !$admin->role->permissions->contains('name', 'view_user')) {
+            return response()->json(['message' => 'Yetkiniz yok'], 403);
+        }
+
         return response()->json(User::all());
+    }
+
+
+    public function createAdminUser(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:admin_users,email',
+            'password' => 'required|string|min:6',
+            'role_id' => 'required|exists:roles,id',
+        ]);
+
+        $validated['password'] = bcrypt($validated['password']);
+
+        $admin = AdminUser::create($validated);
+
+        return response()->json(['message' => 'Admin oluşturuldu', 'admin' => $admin], 201);
     }
 
     // Belirli kullanıcıyı getir
