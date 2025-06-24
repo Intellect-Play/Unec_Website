@@ -91,8 +91,7 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::post('/admin-users', [UserManagementController::class, 'createAdminUser'])
         ->middleware('check.permission:assign_roles');
 
-
-    Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::post('/logout', [AdminAuthController::class, 'logout']);
 });
 
 //
