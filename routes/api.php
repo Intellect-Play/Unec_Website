@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,10 +17,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 // Register and - login
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
@@ -39,3 +40,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //Search users
 Route::middleware('auth:sanctum')->get('/search', [UserController::class, 'search']);
+
+
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    Route::get('/users', [UserManagementController::class, 'index']);
+    Route::get('/users/{id}', [UserManagementController::class, 'show']);
+    Route::put('/users/{id}', [UserManagementController::class, 'update']);
+    Route::delete('/users/{id}', [UserManagementController::class, 'destroy']);
+});
