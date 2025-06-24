@@ -42,9 +42,21 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->get('/search', [UserController::class, 'search']);
 
 
+
+//-------------------------------------------- ADMIN --------------------------------
+
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    //User actions
     Route::get('/users', [UserManagementController::class, 'index']);
     Route::get('/users/{id}', [UserManagementController::class, 'show']);
     Route::put('/users/{id}', [UserManagementController::class, 'update']);
     Route::delete('/users/{id}', [UserManagementController::class, 'destroy']);
+
+
+    //Roles
+    Route::post('/roles', [UserManagementController::class, 'createRole']);
+    Route::post('/permissions', [UserManagementController::class, 'createPermission']);
+    Route::post('/roles/{role}/permissions', [UserManagementController::class, 'assignPermissions']);
 });
+
+//
