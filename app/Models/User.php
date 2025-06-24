@@ -28,7 +28,8 @@ class User extends Authenticatable
         'group',
         'job_place',
         'contact',
-        'image'
+        'image',
+        'is_verified'
     ];
 
     /**
