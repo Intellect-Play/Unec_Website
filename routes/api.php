@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\SocialNetworkController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
@@ -29,13 +30,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/{id}', [UserController::class, 'show']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::post('/users/{id}', [UserController::class, 'update']);
+    // Route::get('/users', [UserController::class, 'index']);
+    // Route::get('/users/{id}', [UserController::class, 'show']);
+    // Route::put('/users/{id}', [UserController::class, 'update']);
+    // Route::post('/users/{id}', [UserController::class, 'update']);
+    // Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
 
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    //Socials
+    Route::get('/socials', [\App\Http\Controllers\SocialController::class, 'index']);
+    Route::post('/socials', [\App\Http\Controllers\SocialController::class, 'store']);
+    Route::delete('/socials/{id}', [\App\Http\Controllers\SocialController::class, 'destroy']);
 });
 
 //Search users
@@ -92,6 +97,17 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
         ->middleware('check.permission:assign_roles');
 
     Route::post('/logout', [AdminAuthController::class, 'logout']);
+
+
+    //Social Netowrks
+    Route::get('/social-networks', [SocialNetworkController::class, 'index'])
+        ->middleware('check.permission:assign_roles');
+
+    Route::post('/social-networks', [SocialNetworkController::class, 'store'])
+        ->middleware('check.permission:assign_roles');
+
+    Route::delete('/social-networks/{id}', [SocialNetworkController::class, 'destroy'])
+        ->middleware('check.permission:assign_roles');
 });
 
 //

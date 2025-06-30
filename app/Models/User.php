@@ -51,4 +51,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'is_verified' => 'boolean',
     ];
+
+    public function socials()
+    {
+        return $this->hasMany(\App\Models\Social::class);
+    }
 }
