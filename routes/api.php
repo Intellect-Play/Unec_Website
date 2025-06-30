@@ -41,6 +41,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/socials', [\App\Http\Controllers\SocialController::class, 'index']);
     Route::post('/socials', [\App\Http\Controllers\SocialController::class, 'store']);
     Route::delete('/socials/{id}', [\App\Http\Controllers\SocialController::class, 'destroy']);
+
+    //Connections
+    Route::post('/connections', [\App\Http\Controllers\ConnectionController::class, 'sendRequest']);
+    Route::post('/connections/{id}/accept', [\App\Http\Controllers\ConnectionController::class, 'acceptRequest']);
+    Route::post('/connections/{id}/reject', [\App\Http\Controllers\ConnectionController::class, 'rejectRequest']);
+    Route::get('/connections', [\App\Http\Controllers\ConnectionController::class, 'myConnections']);
 });
 
 //Search users
