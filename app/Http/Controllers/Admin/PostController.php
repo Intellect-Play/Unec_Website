@@ -19,16 +19,23 @@ class PostController extends Controller
     // Yeni post oluştur
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
+        $request->validate([
+            'title' => 'required|string',
             'content' => 'required|string',
-            'type' => 'required|string',
-            'image' => 'nullable|string',
+            'type' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // max 2MB
         ]);
 
-        $validated['admin_user_id'] = auth()->id();
+        $data = $request->except('image');
+        $data['admin_user_id'] = auth()->id();
 
-        $post = Post::create($validated);
+        if ($request->hasFile('image')) {
+            $filename = time() . '.' . $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->move(public_path('uploads'), $filename);
+            $data['image'] = 'uploads/' . $filename;
+        }
+
+        $post = Post::create($data);
 
         return response()->json(['message' => 'Post oluşturuldu', 'post' => $post], 201);
     }
@@ -45,14 +52,26 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'content' => 'sometimes|required|string',
-            'type' => 'sometimes|required|string',
-            'image' => 'nullable|string',
+        $request->validate([
+            'title' => 'sometimes|string',
+            'content' => 'sometimes|string',
+            'type' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $post->update($validated);
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            if ($post->image && file_exists(public_path($post->image))) {
+                unlink(public_path($post->image));
+            }
+
+            $filename = time() . '.' . $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->move(public_path('uploads'), $filename);
+            $data['image'] = 'uploads/' . $filename;
+        }
+
+        $post->update($data);
 
         return response()->json(['message' => 'Post güncellendi', 'post' => $post]);
     }
