@@ -49,6 +49,10 @@ class RolePermissionSeeder extends Seeder
             'edit_user',
             'assign_roles',
             'view_user',
+            'create_post',
+            'edit_post',
+            'delete_post',
+            'view_post',
         ];
 
         foreach ($permissions as $perm) {
