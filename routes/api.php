@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\SocialNetworkController;
 use App\Http\Controllers\Admin\UserManagementController;
@@ -122,6 +123,15 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::get('/posts/{id}', [PostController::class, 'show'])->middleware('check.permission:view_post');
     Route::put('/posts/{id}', [PostController::class, 'update'])->middleware('check.permission:edit_post');
     Route::delete('/posts/{id}', [PostController::class, 'destroy'])->middleware('check.permission:delete_post');
+
+
+
+    //EVENTS
+    Route::post('/events', [EventController::class, 'store'])->middleware('check.permission:create_event');
+    Route::put('/events/{id}', [EventController::class, 'update'])->middleware('check.permission:edit_event');
+    Route::delete('/events/{id}', [EventController::class, 'destroy'])->middleware('check.permission:delete_event');
+    Route::get('/events', [EventController::class, 'index'])->middleware('check.permission:view_event');
+    Route::get('/events/{id}', [EventController::class, 'show'])->middleware('check.permission:view_event');
 });
 
 //

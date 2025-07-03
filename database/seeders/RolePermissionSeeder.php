@@ -44,6 +44,10 @@ class RolePermissionSeeder extends Seeder
 
         // Tüm gerekli izinleri oluştur
         $permissions = [
+            'create_event',
+            'edit_event',
+            'delete_event',
+            'view_event',
             'create_user',
             'delete_user',
             'edit_user',
