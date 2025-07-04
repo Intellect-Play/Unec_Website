@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\ResourceController;
 use App\Http\Controllers\Admin\SocialNetworkController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Api\AuthController;
@@ -132,6 +133,23 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->group(function () {
     Route::delete('/events/{id}', [EventController::class, 'destroy'])->middleware('check.permission:delete_event');
     Route::get('/events', [EventController::class, 'index'])->middleware('check.permission:view_event');
     Route::get('/events/{id}', [EventController::class, 'show'])->middleware('check.permission:view_event');
+
+
+    //Resources
+    Route::get('/resources', [ResourceController::class, 'index'])
+        ->middleware('check.permission:view_resource');
+
+    Route::post('/resources', [ResourceController::class, 'store'])
+        ->middleware('check.permission:create_resource');
+
+    Route::get('/resources/{id}', [ResourceController::class, 'show'])
+        ->middleware('check.permission:view_resource');
+
+    Route::put('/resources/{id}', [ResourceController::class, 'update'])
+        ->middleware('check.permission:edit_resource');
+
+    Route::delete('/resources/{id}', [ResourceController::class, 'destroy'])
+        ->middleware('check.permission:delete_resource');
 });
 
 //

@@ -44,6 +44,10 @@ class RolePermissionSeeder extends Seeder
 
         // Tüm gerekli izinleri oluştur
         $permissions = [
+            'create_resource',
+            'edit_resource',
+            'delete_resource',
+            'view_resource',
             'create_event',
             'edit_event',
             'delete_event',
